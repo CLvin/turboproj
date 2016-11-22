@@ -1,0 +1,24 @@
+CZ = 0; % Axial Velocity
+CR = 0; % Radial Velocity
+CM = 0; % Meridional Vel.
+CU = 0; % Tangential Vel.
+RCU = 0; %Swirl
+VU = 0; %Relative Tangential Vel.
+C = 0; %Absolute Velocity
+V = 0; %Relative Velocity
+
+USPEED = 0; %Rot. Speed
+ALPHA = 0; %Abs. angle in rad
+OMEGA = 0; %Wheel Speed
+BETA = 0; %Rel. angle
+Z = 0; %Z-coord.
+RADIUS = 0; %R-coord.
+
+TSTATIC = 0; %Static Temp.
+TTOTAL = 288; %Total Temp.
+TOREL = 0; %Total Rel. Temp.
+HOREL = 0; %Total Rel. Enth.
+HTOTAL = 0; %Stag. Enth.
+DENSITY = 0; %Density
+ENTROPY = 0; %Entropy
+ROTALPY = 0; %Rothalpy
