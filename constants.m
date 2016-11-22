@@ -26,14 +26,14 @@ PSTATIC = 0; %Static Pressure
 PTOTAL = 0; %Total Pressure
 PSI = 0; %Stream function
 
-CP = 0; %Cp
+CP = 1005; %Cp
 GAMMA = 1.4; %Gamma
 RGAS = 287.058; %Gas const.
 XMASS = 0; %Mass
 RHS = 0; %Right hand side
 
-RHUB = 0; %radius of hub
-RSHROUD = 0; %radius of shroud
+RHUB = 0.45; %radius of hub
+RSHROUD = 0.50; %radius of shroud
 G = 9.81; %gravity m/s^2
 LOSS_COEFF = 0; %omeglos
 

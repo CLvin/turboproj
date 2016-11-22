@@ -54,10 +54,7 @@ for I=2:NSTATN
         %ROTATING AND NON-ROTATING QUANTITIES AT REFERENCE STATION
         
         ROTALP1 = HTOTAL1 - ROTATE * RCU1;
-        HOR2 = ROTALP1 + (ROTATE * RADIUS(I,J))^2/2;
+        HOR2 = ROTALP1 + (ROTATE * RADIUS(I,J))^2 /2;
         HOR1 = ROTALP1 + (ROTATE * RAD1)^2/2;
-        POR1 = PTOTAL1 * (HOR1/HTOTAL1)^3.5;
-        POR2IDL = POR1 *(HOR2/HOR1)^3.5;
-        
-        if (I>NLE & I<NTE)
-            
+        POR1 = PTOTAL1 * (HOR1/HTOTAL1)**GAMAM
+        POR2IDL = POR1 *(HOR2/HOR1 )**GAMAM

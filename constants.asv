@@ -21,4 +21,22 @@ HOREL = 0; %Total Rel. Enth.
 HTOTAL = 0; %Stag. Enth.
 DENSITY = 0; %Density
 ENTROPY = 0; %Entropy
-ROTALPY = 0; %Rothalpy
+ROTHALPY = 0; %Rothalpy
+PSTATIC = 0; %Static Pressure
+PTOTAL = 0; %Total Pressure
+PSI = 0; %Stream function
+
+CP = 1005; %Cp
+GAMMA = 1.4; %Gamma
+RGAS = 287.058; %Gas const.
+XMASS = 0; %Mass
+RHS = 0; %Right hand side
+
+RHUB = 0.45; %radius of hub
+RSHROUD = 0.50; %radius of shroud
+G = 9.81; %gravity m/s^2
+LOSS_COEFF = 0; %omeglos
+
+NSTATN = 10; %number of vertical grid lines
+NSTREAM = 10; %number of horizontal grid lines
+
