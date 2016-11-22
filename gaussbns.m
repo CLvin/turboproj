@@ -1,4 +1,4 @@
-function [err, tol, iter, xnew] = gaussbns(A, X, RHS, MBAND, MM)
+function [err, tol, iter, xnew] = gaussbns(A, X0, B)
 %**************************************************************** 
 %PROF. W.G. HABASHI, McGILL UNIVERSITY  
 %PROGRAM TO SOLVE N SIMULTANEOUS EQUATIONS BY GAUSS-SEIDEL
@@ -16,43 +16,40 @@ function [err, tol, iter, xnew] = gaussbns(A, X, RHS, MBAND, MM)
 %or, MBAND = ((MM - 1)/2)+1
 %****************************************************************
 [N, MM] = size(A);
-MBAND2 = ((MM-1)/2) + 1;
 TOLER = 1.0E-05;
 NTRY = 50;
-A = (2.*N).*(MBAND2-1) + 1;
+[L, U] = lu(A);
 
 for i = 1:NTRY
-    ERROR = 0.0;
-    
-    %row sweep
-    for j = 1:N
-        XOLD = X(j);
-        SUM = RHS(j);
-    %column sweeep
-    JSTART = MAX(1,i - MBAND2 + 1);
-    JFINIS = MIN(N, i + MBAND2 - 1);
-        for k = JSTART:JFINIS
-            II = i;
-            JJ = j-i+1;
-            SUM = SUM - A(II,JJ)*X(j);
+  ERROR = 0.0;
+        %row sweep
+        for j = 1:N
+            XOLD = X0(j);
+            SUM = b(j);
+        %column sweeep
+        JSTART = max(1, j - MBAND + 1);
+        JFINIS = min(N, j + MBAND - 1);
+            for k = JSTART:JFINIS
+                II = j;
+                JJ = k-j+1;
+                SUM = SUM - (A(II,JJ).*X0(j));
+            end
+        %newly computed values at j'th iteration
+        SUM = SUM + A(j, MBAND).*X0(j);
+        X0(j) = SUM ./ A(j, MBAND);
+        ERROR = max([ERROR (abs(XOLD-X0(j)))]);
         end
-    %newly computed values at j'th iteration
-    SUM = SUM + A(i, MBAND2)*X(i);
-    X(i) = SUM / A(i, MBAND2);
-    ERROR = max([ERROR (abs(XOLD-X(i)))]);
-    end
-    %check if max error is within tol.
-    if (ERROR < TOLER)
-        err = ERROR;
-        tol = TOLER;
-        iter = i;
-        xnew = X;
-        break
-    else
-        err = ERROR;
-        tol = TOLER;
-        xnew = X;
-        break
-    end  
+  %check if max error is within tol.
+  if (ERROR < TOLER)
+      err = ERROR;
+      tol = TOLER;
+      iter = i;
+      xnew = X0;
+      break
+  end
+      err = ERROR;
+      tol = TOLER;
+      iter = i;
+      xnew = X0;
 end
 end
