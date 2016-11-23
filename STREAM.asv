@@ -1,8 +1,8 @@
 %% TRACING THERMODYNAMIC VARIABLES STATION-BY-STATION
 function STREAM(PSI,CZ,CR,RCU,DENSITY,RADIUS,HTOTAL,KOUNT,TOTAL,RHS,NSTRM,NSTATN,ERRRHS,ERRDENS,OMEGLOS,ENTROPY)
 constants;
-NLE = ;
-NTE = ;
+NLE = ???;
+NTE = ???;
 %% UPDATING THE DENSITY ON THE INLET
 
 for j=1:NSTRM
@@ -54,7 +54,66 @@ for I=2:NSTATN
         %ROTATING AND NON-ROTATING QUANTITIES AT REFERENCE STATION
         
         ROTALP1 = HTOTAL1 - ROTATE * RCU1;
-        HOR2 = ROTALP1 + (ROTATE * RADIUS(I,J))^2 /2;
+        HOR2 = ROTALP1 + (ROTATE * RADIUS(I,J))^2/2;
         HOR1 = ROTALP1 + (ROTATE * RAD1)^2/2;
-        POR1 = PTOTAL1 * (HOR1/HTOTAL1)**GAMAM
-        POR2IDL = POR1 *(HOR2/HOR1 )**GAMAM
+        POR1 = PTOTAL1 * (HOR1/HTOTAL1)^GAMAM;
+        POR2IDL = POR1 *(HOR2/HOR1)^GAMAM;
+        if ((I > NLE) & (I < NTE))
+            OMEGLOS = 0.03*(I - NLE)/(NTE-NLE);
+            PLOSS = OMEGLOS*(POR1 - PSTAT1);
+        else
+            OMEGLOS = 0;
+            PLOSS = 0;
+        end
+        POR2 = POR2IDL - PLOSS;
+        
+        %For Project 1,2
+        RCU(I,J) = RCU1;
+        if (I == NLE + 1)
+            RCU(I,J) = 117.85;
+        end
+        if (I == NLE + 2)
+            RCU(I,J) = 157.1;
+        end
+        if (I == NLE + 3)
+            RCU(I,J) = 196.35;
+        end
+        if (I == NTE)
+            RCU(I,J) = 235.6;
+        end
+        
+        HTOTAL(I,J) = HTOTAL1 + ROTATE * (RCU(I,J) - RCU1);
+        PTOTAL(I,J) = POR2 * (HTOTAL(I,J)/HOR2).^(GAMAM);
+        
+        %For Project 3.
+        %PTOTAL(I,J) = PTOTAL1 * PressureRatio;
+        %HTOTAL(I,J) = HOR2 * (PTOTAL(I,J)/POR2).^GAMAM;
+        %RCU(I,J) = RCU1 + (HTOTAL(I,J) - HTOTAL1)/ ROTATE;
+        
+        %Calculation Block for Common Vars.
+        CU = RCU(I,J)/RADIUS(I,J);
+        VU = CU - ROTATE*RADIUS(I,J);
+        V2SQ = VU^2 + CZ(I,J)^2 + CR(I,J)^2;
+        C2SQ = CU^2 + CZ(I,J)^2 + CR(I,J)^2;
+        HSTATIC = HOR2 - V2SQ/2;
+        HTOTAL(I,J) = HSTATIC + C2SQ/2;
+        PTOTAL(I,J) = POR2 * (HTOTAL(I,J)/HOR2)^GAMAM;
+        DENSOLD = DENSITY(I,J);
+        DENSITY(I,J) = PSTATIC/(RGAS*HSTATIC/CP);
+        CHANGE = abs(DENSOLD - DENSITY(I,J));
+        ERRDENS = max(CHANGE, ERRDENS);
+        ENTROPY(I,J) = CP * log(HTOTAL(I,J)/HTOTAL1) - RGAS*log(PTOTAL(I,J)/PTOTAL1) + ENTROP1;
+        %Assemble RHS for Unknown
+        ERRRHS = 0;
+        CHANGE = 0;
+        for I = 1:NSTATN
+            for J = 2: NSTRM-1
+                RHSOLD = RHS(I,J);
+                CU = RCU(I,J)/RADIUS(I,J);
+                TSTATIC = (HTOTAL(I,J)-(CZ(I,J)^2+CR(I,J)^2 + CU^2)/2)/CP;
+                RHS(I,J) = -1/CZ(I,J) * 2*pi/XMASS*(CU/RADIUS(I,J)*RCU(I,J+1) - RCU(I,J-1))/(2*H) + TSTATIC*(ENTROPY(I,J+1)-ENTROPY(I,J-1
+    end
+    
+end
+end
+        

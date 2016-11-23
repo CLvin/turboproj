@@ -28,6 +28,7 @@ PSI = 0; %Stream function
 
 CP = 1005; %Cp
 GAMMA = 1.4; %Gamma
+GAMAM = 3.5;
 RGAS = 287.058; %Gas const.
 XMASS = 0; %Mass
 RHS = 0; %Right hand side
