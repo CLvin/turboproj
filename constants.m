@@ -40,4 +40,17 @@ LOSS_COEFF = 0; %omeglos
 
 NSTATN = 10; %number of vertical grid lines
 NSTREAM = 10; %number of horizontal grid lines
+NSTRM = 10;
+
+PSI = zeros(NSTATN, NSTREAM);
+RHS = zeros(NSTATN, NSTREAM);
+CZ = zeros(NSTATN, NSTREAM);
+CR = zeros(NSTATN, NSTREAM);
+RADIUS = zeros(NSTATN, NSTREAM);
+HTOTAL = zeros(NSTATN, NSTREAM);
+RCU = zeros(NSTATN, NSTREAM);
+PTOTAL = zeros(NSTATN, NSTREAM);
+DENSITY = zeros(NSTATN, NSTREAM);
+ENTROPY = zeros(NSTATN, NSTREAM);
+BETA = zeros(NSTATN, NSTREAM);
 
