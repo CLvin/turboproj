@@ -26,7 +26,7 @@ NTRY = 50;
 for ITERAT = 1:NTRY
   ERROR = 0.0;
         %row sweep
-        for I = 2:N
+        for I = 1:N
             XOLD = X(I);
             SUM = RHS(I);
         %column sweeep
@@ -34,7 +34,6 @@ for ITERAT = 1:NTRY
         JFINIS = min(N, I + MBAND - 1)
             for J = JSTART:JFINIS
                 II = I
-                J
                 JJ = J-I+1
                 SUM = SUM - (A(II,JJ)*X(J));
             end
