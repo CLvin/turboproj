@@ -1,9 +1,8 @@
 %% TRACING THERMODYNAMIC VARIABLES STATION-BY-STATION
-function STREAM(PSI,CZ,CR,RCU,DENSITY,RADIUS,HTOTAL,KOUNT,TOTAL,RHS,NSTRM,NSTATN,ERRRHS,ERRDENS,OMEGLOS,ENTROPY)
 constants;
-NLE = ???;
-NTE = ???;
-H= ???;
+NLE = 21;
+NTE = 30;
+H= (RSHROUD-RHUB)/11;
 %% UPDATING THE DENSITY ON THE INLET
 
 for j=1:NSTRM
@@ -68,7 +67,7 @@ for I=2:NSTATN
         end
         POR2 = POR2IDL - PLOSS;
         
-        %For Project 1,2
+        
         RCU(I,J) = RCU1;
         if (I == NLE + 1)
             RCU(I,J) = 117.85;
@@ -86,11 +85,7 @@ for I=2:NSTATN
         HTOTAL(I,J) = HTOTAL1 + ROTATE * (RCU(I,J) - RCU1);
         PTOTAL(I,J) = POR2 * (HTOTAL(I,J)/HOR2).^(GAMAM);
         
-        %For Project 3.
-        %PTOTAL(I,J) = PTOTAL1 * PressureRatio;
-        %HTOTAL(I,J) = HOR2 * (PTOTAL(I,J)/POR2).^GAMAM;
-        %RCU(I,J) = RCU1 + (HTOTAL(I,J) - HTOTAL1)/ ROTATE;
-        
+                
         %Calculation Block for Common Vars.
         CU = RCU(I,J)/RADIUS(I,J);
         VU = CU - ROTATE*RADIUS(I,J);
