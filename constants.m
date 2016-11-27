@@ -39,6 +39,24 @@ RSHROUD = 0.50; %radius of shroud
 G = 9.81; %gravity m/s^2
 LOSS_COEFF = 0.03; %omeglos
 
+<<<<<<< HEAD
 NSTATN = 11; %number of vertical grid lines
 NSTREAM = 51; %number of horizontal grid lines
+=======
+NSTATN = 10; %number of vertical grid lines
+NSTREAM = 10; %number of horizontal grid lines
+NSTRM = 10;
+
+PSI = zeros(NSTATN, NSTREAM);
+RHS = zeros(NSTATN, NSTREAM);
+CZ = zeros(NSTATN, NSTREAM);
+CR = zeros(NSTATN, NSTREAM);
+RADIUS = zeros(NSTATN, NSTREAM);
+HTOTAL = zeros(NSTATN, NSTREAM);
+RCU = zeros(NSTATN, NSTREAM);
+PTOTAL = zeros(NSTATN, NSTREAM);
+DENSITY = zeros(NSTATN, NSTREAM);
+ENTROPY = zeros(NSTATN, NSTREAM);
+BETA = zeros(NSTATN, NSTREAM);
+>>>>>>> a6c9c7de12ab5b9e28860ae5212ed3cb40ffc7c3
 
