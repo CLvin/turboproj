@@ -1,23 +1,19 @@
 %% TRACING THERMODYNAMIC VARIABLES STATION-BY-STATION
-<<<<<<< HEAD
 constants;
+
 NLE = 21;
 NTE = 30;
 H= (RSHROUD-RHUB)/11;
-=======
-%function STREAM(PSI,CZ,CR,RCU,DENSITY,RADIUS,HTOTAL,KOUNT,TOTAL,RHS,NSTRM,NSTATN,ERRRHS,ERRDENS,OMEGLOS,ENTROPY)
-constants;
-NLE = 10;
-NTE = 10;
-H= 5;
->>>>>>> a6c9c7de12ab5b9e28860ae5212ed3cb40ffc7c3
+
+
+
 %% UPDATING THE DENSITY ON THE INLET
 
 for J=1:NSTRM
-    CSQ = (RCU(1,J)/RADIUS(1,J))^2 + CZ(1,J)^2 + CR(1,J)^2;
-    HSTATIC = HTOTAL(1,J) - CSQ/2;
-    PSTATIC = PTOTAL(1,J)*(HSTATIC/HTOTAL(1,J))^3.5;
-    DENSITY(1,J) = PSTATIC/(RGAS*HSTATIC/CP);
+    CSQ = (RCU(J,1)/RADIUS(J,1))^2 + CZ(J,1)^2 + CR(J,1)^2;
+    HSTATIC = HTOTAL(J,1) - CSQ/2;
+    PSTATIC = PTOTAL(J,1)*(HSTATIC/HTOTAL(J,1))^3.5;
+    DENSITY(J,1) = PSTATIC/(RGAS*HSTATIC/CP);
 end
 
 %% SWEEPING THE PLANES FROM PLANE 2 TO NSTAN
@@ -29,15 +25,15 @@ for I=2:NSTATN
         LEFT = NLE;
     end
     NSTART = 1;
-    PSIDN = PSI(LEFT,NSTART);
-    PSIUP = PSI(LEFT,NSTART+1);
+    PSIDN = PSI(NSTART,LEFT);
+    PSIUP = PSI(NSTART+1,LEFT);
     
     for J=1:NSTRM
-        DESIRED = PSI(I,J);
+        DESIRED = PSI(J, I);
         if (~(DESIRED<=PSIUP) && ~(DESIRED>=PSIDN))
             NSTART = NSTART + 1;
-            PSIDN = PSI(LEFT,NSTART);
-            PSIUP = PSI(LEFT,NSTART+1);
+            PSIDN = PSI(NSTART,LEFT);
+            PSIUP = PSI(NSTART+1,LEFT);
         else
             DELTA = (DESIRED - PSIDN)/(PSIUP - PSIDN); %Streamline origin 
                                                        %has been located
@@ -47,23 +43,23 @@ for I=2:NSTATN
             ROTATE = OMEGA;
         end
         % QUANTITIES AT "1" NEEDED FOR CONSERVATION PRINCIPLE
-        RCU1 = DELTA*(RCU(LEFT,NSTART+1) - RCU(LEFT,NSTART)) + RCU(LEFT,NSTART);
-        HTOTAL1 = DELTA*(HTOTAL(LEFT,NSTART+1) - HTOTAL(LEFT,NSTART)) + HTOTAL(LEFT,NSTART);
-        PTOTAL1 = DELTA*(PTOTAL(LEFT,NSTART+1) - PTOTAL(LEFT,NSTART)) + PTOTAL(LEFT,NSTART);    
-        RAD1 = DELTA * (RADIUS(LEFT,NSTART+1) - RADIUS(LEFT,NSTART)) + RADIUS(LEFT,NSTART);
+        RCU1 = DELTA*(RCU(NSTART+1,LEFT) - RCU(NSTART,LEFT)) + RCU(NSTART,LEFT);
+        HTOTAL1 = DELTA*(HTOTAL(NSTART+1,LEFT) - HTOTAL(NSTART,LEFT)) + HTOTAL(NSTART,LEFT);
+        PTOTAL1 = DELTA*(PTOTAL(NSTART+1,LEFT) - PTOTAL(NSTART,LEFT)) + PTOTAL(NSTART,LEFT);    
+        RAD1 = DELTA * (RADIUS(NSTART+1,LEFT) - RADIUS(NSTART,LEFT)) + RADIUS(NSTART,LEFT);
         % QUANTITIES AT "1" NEEDED FOR LOSS CALCULATION
-        DENS1 = DELTA*(DENSITY(LEFT,NSTART+1) - DENSITY(LEFT,NSTART)) + DENSITY(LEFT,NSTART);
-        CZ1 = DELTA*(CZ(LEFT,NSTART+1) - CZ(LEFT,NSTART)) + CZ(LEFT,NSTART);
-        CR1 = DELTA*(CR(LEFT,NSTART+1) - CR(LEFT,NSTART)) + CR(LEFT,NSTART);
-        ENTROP1 = DELTA*(ENTROPY(LEFT,NSTART+1) - ENTROPY(LEFT,NSTART)) + ENTROPY(LEFT,NSTART);
+        DENS1 = DELTA*(DENSITY(NSTART+1,LEFT) - DENSITY(NSTART,LEFT)) + DENSITY(NSTART,LEFT);
+        CZ1 = DELTA*(CZ(NSTART+1,LEFT) - CZ(NSTART,LEFT)) + CZ(NSTART,LEFT);
+        CR1 = DELTA*(CR(NSTART+1,LEFT) - CR(NSTART,LEFT)) + CR(NSTART,LEFT);
+        ENTROP1 = DELTA*(ENTROPY(NSTART+1,LEFT) - ENTROPY(NSTART,LEFT)) + ENTROPY(NSTART,LEFT);
         C1SQ = CZ1^2 + CR1^2 + (RCU1/RAD1)^2;
-        HSTAT1 = HTOTAL - C1SQ/2;
+        HSTAT1 = HTOTAL1 - C1SQ/2;
         PSTAT1 = PTOTAL1*(HSTAT1/HTOTAL1)^3.5;
         
         %ROTATING AND NON-ROTATING QUANTITIES AT REFERENCE STATION
         
         ROTALP1 = HTOTAL1 - ROTATE * RCU1;
-        HOR2 = ROTALP1 + (ROTATE * RADIUS(I,J))^2/2;
+        HOR2 = ROTALP1 + (ROTATE * RADIUS(J, I))^2/2;
         HOR1 = ROTALP1 + (ROTATE * RAD1)^2/2;
         POR1 = PTOTAL1 * (HOR1/HTOTAL1)^GAMAM;
         POR2IDL = POR1 *(HOR2/HOR1)^GAMAM;
@@ -77,52 +73,55 @@ for I=2:NSTATN
         POR2 = POR2IDL - PLOSS;
         
         
-        RCU(I,J) = RCU1;
+        RCU(J, I) = RCU1;
         if (I == NLE + 1)
-            RCU(I,J) = 117.85;
+            RCU(J, I) = 117.85;
         end
         if (I == NLE + 2)
-            RCU(I,J) = 157.1;
+            RCU(J, I) = 157.1;
         end
         if (I == NLE + 3)
-            RCU(I,J) = 196.35;
+            RCU(J, I) = 196.35;
         end
         if (I == NTE)
-            RCU(I,J) = 235.6;
+            RCU(J, I) = 235.6;
         end
         
-        HTOTAL(I,J) = HTOTAL1 + ROTATE * (RCU(I,J) - RCU1);
-        PTOTAL(I,J) = POR2 * (HTOTAL(I,J)/HOR2).^(GAMAM);
+        HTOTAL(J, I) = HTOTAL1 + ROTATE * (RCU(J, I) - RCU1);
+        PTOTAL(J, I) = POR2 * (HTOTAL(J, I)/HOR2).^(GAMAM);
         
                 
         %Calculation Block for Common Vars.
-        CU = RCU(I,J)/RADIUS(I,J);
-        VU = CU - ROTATE*RADIUS(I,J);
-        V2SQ = VU^2 + CZ(I,J)^2 + CR(I,J)^2;
-        C2SQ = CU^2 + CZ(I,J)^2 + CR(I,J)^2;
+        CU = RCU(J, I)/RADIUS(J, I);
+        VU = CU - ROTATE*RADIUS(J, I);
+        V2SQ = VU^2 + CZ(J, I)^2 + CR(J, I)^2;
+        C2SQ = CU^2 + CZ(J, I)^2 + CR(J, I)^2;
         HSTATIC = HOR2 - V2SQ/2;
-        HTOTAL(I,J) = HSTATIC + C2SQ/2;
-        PTOTAL(I,J) = POR2 * (HTOTAL(I,J)/HOR2)^GAMAM;
-        DENSOLD = DENSITY(I,J);
-        DENSITY(I,J) = PSTATIC/(RGAS*HSTATIC/CP);
-        CHANGE = abs(DENSOLD - DENSITY(I,J));
+        HTOTAL(J, I) = HSTATIC + C2SQ/2;
+        PTOTAL(J, I) = POR2 * (HTOTAL(J, I)/HOR2)^GAMAM;
+        DENSOLD = DENSITY(J, I);
+        DENSITY(J, I) = PSTATIC/(RGAS*HSTATIC/CP);
+        CHANGE = abs(DENSOLD - DENSITY(J, I));
         ERRDENS = max(CHANGE, ERRDENS);
-        ENTROPY(I,J) = CP * log(HTOTAL(I,J)/HTOTAL1) - RGAS*log(PTOTAL(I,J)/PTOTAL1) + ENTROP1;
+        ENTROPY(J, I) = CP * log(HTOTAL(J, I)/HTOTAL1) - RGAS*log(PTOTAL(J, I)/PTOTAL1) + ENTROP1;
         %Assemble RHS for Unknown
         ERRRHS = 0;
         CHANGE = 0;
-        for i = 1:NSTATN
-            for j = 2: NSTRM-1
-                RHSOLD = RHS(i,j);
-                CU = RCU(i,j)/RADIUS(i,j);
-                TSTATIC = (HTOTAL(i,j)-(CZ(i,j)^2+CR(i,j)^2 + CU^2)/2)/CP;
-                RHS(i,j) = -1/CZ(i,j) * 2*pi/XMASS*(CU/RADIUS(i,j)*RCU(i,j+1) - RCU(i,j-1))/(2*H) + TSTATIC*(ENTROPY(i,j+1)-ENTROPY(i,j-1))/(2*H);
-                CHANGE = abs(RHS(i,j) - RHSOLD);
+        for I = 1:NSTATN
+            for J = 2: NSTRM-1
+                RHSOLD = RHS(J, I);
+                CU = RCU(J, I)/RADIUS(J, I);
+                TSTATIC = (HTOTAL(J, I)-(CZ(J, I)^2+CR(J, I)^2 + CU^2)/2)/CP;
+                RHS(J, I) = -1/CZ(J, I) * 2*pi/XMASS*(CU/RADIUS(J, I)*RCU(J+1, I) - RCU(J-1, I))/(2*H) + TSTATIC*(ENTROPY(J+1,I)-ENTROPY(J-1,I))/(2*H);
+                CHANGE = abs(RHS(J, I) - RHSOLD);
                 ERRRHS = max(ERRRHS, CHANGE);
             end
         end
     end
     
 end
-%end
+%% Solving the equation
+
+%[X, ITER] = GaussSolver(A,RHS);
+
         

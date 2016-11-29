@@ -1,4 +1,4 @@
-function [X ITER] = GaussSolver(A,RHS)
+function [X, ITER] = GaussSolver(A,RHS)
 n = length(RHS);
 X = zeros(n,1);
 TOLER = ones(n,1);
@@ -16,5 +16,5 @@ while max(TOLER) > 1*10^-5
     Xsolution(:,iteration) = X;
     TOLER = sqrt((X - Z).^2);
 end
-[R ITER] = size(Xsolution);
+[~, ITER] = size(Xsolution);
 end
